@@ -1,0 +1,94 @@
+﻿@page "/"
+@using CodingMate.Client.Controls
+
+<MudGrid>
+    <MudItem xs="12" sm="4" md="3">
+        <Sidebar SelectedColor="@SelectedColor"
+                 OnColorSelected="@SelectColor"
+                 Rows="@Rows"
+                 Columns="@Columns"
+                 OnResetMat="ResetMat"
+                 OnSaveMat="SaveMat"
+                 OnGridSizeChanged="SetGridSize" />
+    </MudItem>
+    <MudItem xs="12" sm="8" md="9">
+        <MudPaper Class="pa-6" Style="overflow-x: auto;">
+            <CodingMat Rows="@Rows"
+                       Columns="@Columns"
+                       CurrentColor="@SelectedColor"
+                       Matrix="@Matrix"
+                       CellSizeEm="3"
+                       OnCellClick="@(args => SetCellColor(args.Item1, args.Item2))" />
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+
+<script>
+    window.exportCodingMatToJpg = function (matData) {
+        // matData: {rows, columns, matrix, cellSizePx}
+        const cell = matData.cellSizePx || 32;
+        const header = cell;
+        const w = (matData.columns + 1) * cell;
+        const h = (matData.rows + 1) * cell;
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+
+        // Tło
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.font = (cell * 0.6) + "px Arial";
+
+        // Kolumny - litery
+        for (let col = 0; col < matData.columns; col++) {
+            ctx.fillStyle = "#000";
+            ctx.fillText(getColumnLetter(col), (col + 1) * cell + cell / 2, cell / 2);
+        }
+        // Wiersze - numery
+        for (let row = 0; row < matData.rows; row++) {
+            ctx.fillStyle = "#000";
+            ctx.fillText((row + 1).toString(), cell / 2, (row + 1) * cell + cell / 2);
+        }
+        // Mata kolorów
+        for (let row = 0; row < matData.rows; row++) {
+            for (let col = 0; col < matData.columns; col++) {
+                const color = matData.matrix[row][col] || "#fff";
+                ctx.fillStyle = color;
+                ctx.fillRect((col + 1) * cell, (row + 1) * cell, cell, cell);
+                ctx.strokeStyle = "#bbb";
+                ctx.lineWidth = cell * 0.07;
+                ctx.strokeRect((col + 1) * cell, (row + 1) * cell, cell, cell);
+            }
+        }
+
+        // Eksportuj JPG i pobierz
+        canvas.toBlob(function (blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'mata.jpg';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 100);
+        }, "image/jpeg", 0.95);
+
+        // Funkcja do literowania kolumn
+        function getColumnLetter(index) {
+            let result = "";
+            let n = index;
+            do {
+                result = String.fromCharCode('A'.charCodeAt(0) + (n % 26)) + result;
+                n = Math.floor(n / 26) - 1;
+            } while (n >= 0);
+            return result;
+        }
+    }
+</script>

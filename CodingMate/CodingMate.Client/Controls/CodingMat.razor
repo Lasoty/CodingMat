@@ -1,0 +1,29 @@
+﻿<div style="display: flex; flex-direction: column; align-items: flex-start;">
+    <!-- nagłówki kolumn -->
+    <div style="display: flex; flex-direction: row;">
+        <div style="@GetHeaderCellStyle(false)"></div> <!-- puste pole -->
+        @for (int col = 0; col < Columns; col++)
+        {
+            <div style="@GetHeaderCellStyle(true)">
+                @GetColumnLetter(col)
+            </div>
+        }
+    </div>
+    <!-- numery wierszy + pole maty -->
+    @for (int row = 0; row < Rows; row++)
+    {
+        <div style="display: flex; flex-direction: row;">
+            <div style="@GetHeaderCellStyle(false)">
+                @(row + 1)
+            </div>
+            @for (int col = 0; col < Columns; col++)
+            {
+                var r = row;
+                var c = col;
+                <div @onclick="@(() => OnCellClick.InvokeAsync((r, c)))"
+                     style="@GetCellStyle(r, c)">
+                </div>
+            }
+        </div>
+    }
+</div>

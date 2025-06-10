@@ -1,0 +1,54 @@
+﻿<MudPaper Class="pa-4" Elevation="2">
+    <MudText Typo="Typo.h6">Kolory</MudText>
+    <MudColorPicker ShowToolbar="false"
+                    ShowAlpha="false"
+                    ShowColorField="true"
+                    ShowPreview="true"
+                    ShowSliders="false"
+                    ShowInputs="false"
+                    ShowModeSwitch="false"
+                    ColorPickerMode="ColorPickerMode.RGB"
+                    ColorPickerView="ColorPickerView.Grid"
+                    PickerVariant="PickerVariant.Static"
+                    @bind-Value="PickedColor" />
+
+    <MudDivider Class="my-3" />
+    <MudText Typo="Typo.h6">Rozmiar maty</MudText>
+    <MudSlider Min="5"
+               Max="30"
+               Step="1"
+               Variant="Variant.Filled"
+               T="int"
+               Value="10"
+               ValueChanged="RowsChanged">Wiersze</MudSlider>
+    <MudSlider Min="5"
+               Max="30"
+               Step="1"
+               T="int"
+               Value="10"
+               Variant="Variant.Filled"
+               ValueChanged="ColumnsChanged">Kolumny</MudSlider>
+
+
+    <MudGrid Spacing="2">
+        <MudItem>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CleaningServices"
+                       Class="mt-3"
+                       OnClick="ResetMat">Wyczyść matę</MudButton>
+        </MudItem>
+
+        <MudItem>
+            <MudButton Variant="Variant.Filled" 
+                       Color="Color.Secondary"
+                       Class="mt-3"
+                       StartIcon="@Icons.Material.Filled.SaveAlt"
+                       OnClick="@ExportMatToJpg">
+                Zapisz
+            </MudButton>
+
+        </MudItem>
+
+    </MudGrid>
+</MudPaper>
